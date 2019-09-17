@@ -58,7 +58,7 @@ class jsColorQR {
             canvas.remove();
             imageDataRGB[i] = this.convertRGB(imageData, i, size);
         }
-        this.margeRGB(imageDataRGB, size, outputSelector);
+        this.mergeRGB(imageDataRGB, size, outputSelector);
     }
 
     convertRGB(imageData, type, size) {
@@ -76,12 +76,13 @@ class jsColorQR {
                 255 :
                 0;
             data[i + (type + 1) % 3] = data[i + (type + 2) % 3] = 0;
+
         }
         context.putImageData(sparationImgData, 0, 0);
         return sparationImgData;
     }
 
-    margeRGB(imageDataArray, size, outputSelector) {
+    mergeRGB(imageDataArray, size, outputSelector) {
         let canvas = document.createElement("canvas");
         canvas.width = canvas.height = size;
         outputSelector.append(canvas);
@@ -89,10 +90,32 @@ class jsColorQR {
         context.putImageData(imageDataArray[0], 0, 0);
         let imageData = context.getImageData(0, 0, size, size);
         let data = imageData.data;
+        let pallete = [
+          [105,251.46],
+          [246,255,12],
+          [107,246,253],
+          [250,54,250],
+          [255,176,255],
+          [255,148,20]];
+
         for (let i = 0; i < data.length; i += 4) {
-            data[i] += imageDataArray[1].data[i] + imageDataArray[2].data[i]
+            let lennon = Math.floor (Math.random()*6);
+            //console.log (pallete[lennon]);
+            //data[i]     += pallete[lennon][0]; //+= imageDataArray[1].data[i] + imageDataArray[2].data[i]
+            //data[i + 1] += pallete[lennon][1]; //+= imageDataArray[1].data[i + 1] + imageDataArray[2].data[i + 1]
+            //data[i + 2] += pallete[lennon][2]; //+= imageDataArray[1].data[i + 2] + imageDataArray[2].data[i + 2]
+            data[i]     += imageDataArray[1].data[i] + imageDataArray[2].data[i]
             data[i + 1] += imageDataArray[1].data[i + 1] + imageDataArray[2].data[i + 1]
             data[i + 2] += imageDataArray[1].data[i + 2] + imageDataArray[2].data[i + 2]
+            if (data[i] == 0 & data[i+1] ==0 & data[i+2]==0 ) {data[i]= 250;data[i+1]= 54; data[i+2] = 250  };
+            if (data[i] == 0 & data[i+1] ==255 & data[i+2]==255 ) {  data[i]= 105;data[i+1]= 251; data[i+2] = 46  };
+            if (data[i] == 0 & data[i+1] ==0 & data[i+2]==255 ) {  data[i]= 107;data[i+1]= 246; data[i+2] = 253  };
+            if (data[i] == 255 & data[i+1] ==255 & data[i+2]==255 ) { };
+            if (data[i] == 255 & data[i+1] ==0 & data[i+2]==255 ) {   data[i]= 246;data[i+1]= 255; data[i+2] = 12   };
+            if (data[i] == 255 & data[i+1] ==0 & data[i+2]==0 ) {data[i]= 255;data[i+1]= 148; data[i+2] = 20   };
+            if (data[i] == 255 & data[i+1] ==255 & data[i+2]==0 ) { data[i]= 255;data[i+1]= 176; data[i+2] = 255};
+
+
         }
         context.putImageData(imageData, 0, 0);
         return imageData;
